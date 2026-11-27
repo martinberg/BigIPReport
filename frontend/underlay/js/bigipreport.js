@@ -1286,15 +1286,21 @@ function pollCurrentView() {
         }
     }
 }
+function isIpAddress(value) {
+    const ipv4 = /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/;
+
+    return ipv4.test(value) || value.includes(':');
+}
+
 function renderLoadBalancer(loadbalancer, type) {
     let balancer;
-    if (siteData.preferences.HideLoadBalancerFQDN) {
+    if (siteData.preferences.HideLoadBalancerFQDN && !isIpAddress(loadbalancer)) {
         [balancer] = loadbalancer.split('.');
-    }
+	}
     else {
         balancer = loadbalancer;
     }
-    if (type === 'display') {
+	if (type === 'display') {
         return `<a href="https://${bigipreport_escapeHtml(loadbalancer)}" target="_blank" class="plainLink">${bigipreport_escapeHtml(balancer)}</a>`;
     }
     return bigipreport_escapeHtml(balancer);
